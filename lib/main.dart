@@ -46,7 +46,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: appname,
       home: isLoggedIn ? const Home() : const LoginScreen(),
-      initialRoute: '/LoginScreen',
+      initialRoute: '/Home',
       getPages: [
         GetPage(name: '/LoginScreen', page: () => const LoginScreen()),
         GetPage(

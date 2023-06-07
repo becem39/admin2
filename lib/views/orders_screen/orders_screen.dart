@@ -34,7 +34,9 @@ class OrdersScreen extends StatelessWidget {
                     var time = data[index]["order_date"]?.toDate();
                     return ListTile(
                       onTap: () {
-                        Get.to(() => OrderDetails());
+                        Get.to(() => OrderDetails(
+                              data: data[index],
+                            ));
                       },
                       tileColor: textfieldGrey,
                       shape: RoundedRectangleBorder(
@@ -66,7 +68,9 @@ class OrdersScreen extends StatelessWidget {
                                 Icons.payment,
                                 color: fontGrey,
                               ),
-                              boldText(text: 'processing', color: red),
+                              data[index]['order_delivered']
+                                  ? boldText(text: 'Deliverd', color: green)
+                                  : boldText(text: 'processing', color: red),
                             ],
                           ),
                         ],

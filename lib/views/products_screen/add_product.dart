@@ -1,4 +1,5 @@
 import 'package:admin/const/const.dart';
+import 'package:admin/controllers/product_controller.dart';
 import 'package:admin/views/products_screen/components/product_dropdown.dart';
 import 'package:admin/views/products_screen/components/product_images.dart';
 import 'package:admin/views/widgets/custom_textfield.dart';
@@ -11,6 +12,7 @@ class AddProduct extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var controller = Get.find<ProductsController>();
     return Scaffold(
       backgroundColor: purpleColor,
       appBar: AppBar(

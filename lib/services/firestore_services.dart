@@ -103,4 +103,35 @@ class FirestoreServices {
     return firestore.collection(productsCollection).get();
     //.where('p_name', isLessThanOrEqualTo: title)
   }
+
+  static getCategories() async {
+    final snapshot = await firestore.collection('categories').get();
+    var categoryNames = [];
+    for (final doc in snapshot.docs) {
+      final data = doc.data();
+      final categoryName = data['name'] as String?;
+
+      if (categoryName != null) {
+        categoryNames.add(categoryName);
+      }
+    }
+    return categoryNames;
+  }
+
+  static getSubCategories(category) async {
+    final snapshot = await firestore.collection(category).get();
+    var subCategories = [];
+
+    for (final doc in snapshot.docs) {
+      var data = doc.data();
+      var subCategoryList = data['subCategories'] as List<dynamic>?;
+
+      if (subCategoryList != null) {
+        subCategories.addAll(
+            subCategoryList.map((subCategory) => subCategory.toString()));
+      }
+    }
+
+    return subCategories;
+  }
 }

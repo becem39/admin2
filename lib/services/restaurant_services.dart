@@ -14,4 +14,8 @@ class RestaurantServices {
         .where('restaurant_list', arrayContains: currentUser!.uid)
         .snapshots();
   }
+
+  static getProducts() {
+    return firestore.collection(productsCollection).snapshots();
+  }
 }

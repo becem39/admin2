@@ -12,7 +12,10 @@ Widget orderPlaceDetails({title1, data1}) {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             boldText(text: title1,color: fontGrey),
-            boldText(text: data1,color: red),]
+            boldText(text: " X " , color: fontGrey ),
+            boldText(text: data1,color: red),
+            
+        ]
         ),
       ],
     ),
