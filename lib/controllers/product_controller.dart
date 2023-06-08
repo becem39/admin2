@@ -74,6 +74,19 @@ class ProductsController extends GetxController {
     isLoading(false);
     VxToast.show(context, msg: "uploaded");
   }
+
+  addFeature(docId) async {
+   await firestore
+        .collection(productsCollection)
+        .doc(docId)
+        .set({'is_feature': true},SetOptions(merge: true));
+  }
+   removeFeature(docId) async {
+ await   firestore
+        .collection(productsCollection)
+        .doc(docId)
+        .set({'is_feature': false}, SetOptions(merge: true));
+  }
 }
 
 

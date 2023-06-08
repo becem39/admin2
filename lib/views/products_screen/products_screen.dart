@@ -22,12 +22,8 @@ class ProductsScreen extends StatelessWidget {
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             controller.populateCategory();
-         /*   if (controller.categoryList.isNotEmpty) {
-              controller.populateSubCategory(controller.categoryList[0]);
-            }
-           
-            print(controller.subCategoryList);*/
-           Get.to(() => AddProduct());
+
+            Get.to(() => AddProduct());
           },
           backgroundColor: purpleColor,
           child: const Icon(Icons.add),
@@ -83,19 +79,37 @@ class ProductsScreen extends StatelessWidget {
                                       menuBuilder: () => Column(
                                             children: List.generate(
                                               popupMenuIcons.length,
-                                              (index) => Padding(
+                                              (i) => Padding(
                                                 padding:
                                                     const EdgeInsets.all(8.0),
                                                 child: Row(
                                                   children: [
-                                                    Icon(popupMenuIcons[index]),
+                                                    Icon(
+                                                      popupMenuIcons[i],
+                                                      color: data[index]
+                                                              ['is_featured']
+                                                          ? green
+                                                          : darkGrey,
+                                                    ),
                                                     10.heightBox,
                                                     normalText(
-                                                        text: popupMenuTiles[
-                                                            index],
+                                                        text: data[index]
+                                                                ['is_featured']
+                                                            ? "Remove feature"
+                                                            : popupMenuTiles[i],
                                                         color: darkGrey),
                                                   ],
-                                                ).onTap(() {}),
+                                                ).onTap(() {
+                                                  if (data[index]
+                                                      ['is_featured']) {
+                                                    print('eeeee');
+                                                    controller.removeFeature(
+                                                        data[index].id);
+                                                  } else {
+                                                    controller.addFeature(
+                                                        data[index].id);
+                                                  }
+                                                }),
                                               ),
                                             ),
                                           ).box.white.rounded.width(200).make(),
