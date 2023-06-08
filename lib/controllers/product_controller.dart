@@ -1,58 +1,79 @@
 import 'package:admin/const/const.dart';
 import 'package:admin/services/firestore_services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-
+import 'dart:io';
 import '../models/category_model.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 
 class ProductsController extends GetxController {
 //name,price,quantity,cat,subcat,picsx3,
   var pnameController = TextEditingController();
   var ppriceController = TextEditingController();
   var pquantityController = TextEditingController();
+  var pimgController = TextEditingController();
   var categoryList = <String>[].obs;
 // FirestoreServices.getCategories();
   var subCategoryList = <String>[].obs;
-  var pImagesList = [].obs;
+  var isLoading = false.obs;
+
+  var pImagesList = <Rx<File?>>[].obs;
   List<Category> category = [];
 
   var categoryValue = ''.obs;
   var subCategoryValue = ''.obs;
 
- Future<List<String>> populateCategory() async {
+  Future<List<String>> populateCategory() async {
     categoryList.clear();
     List<String> categories = await FirestoreServices.getCategories() ?? [];
     categoryList.addAll(categories);
     return categories;
   }
-Future<List<String>> populateSubCategory(String category) async {
+
+  Future<List<String>> populateSubCategory(String category) async {
     subCategoryList.clear();
     List<String> subCategories =
         await FirestoreServices.getSubCategories(category) ?? [];
     subCategoryList.addAll(subCategories);
-    subCategoryValue.value = ''; // Clear the selected subcategory value
+    subCategoryValue.value = '';
     return subCategories;
   }
 
-
-  /* Future<void> populateCategory() async {
+  pickImage(index) async {
     try {
-      List<String> categories = await FirestoreServices.getCategories();
-      categoryList.assignAll(categories);
-    } catch (error) {
-      print('Error retrieving categories: $error');
-    }
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+        allowMultiple: false,
+      );
+      if (result == null) {
+        return;
+      } else {
+        final path = result.files.single.path!;
+        List<Rx<File?>> tempList = List.from(pImagesList);
+        tempList[index].value = File(path);
+        pImagesList.assignAll(tempList);
+      }
+    } catch (e) {}
   }
 
-  Future<void> populateSubCategory(String category) async {
-    try {
-      List<String> subCategories =
-          await FirestoreServices.getSubCategories(category);
-      subCategoryList.value = subCategories;
-      // subCategoryList.assignAll(subCategories);
-    } catch (error) {
-      print('Error retrieving subcategories: $error');
-    }
-  }*/
+  uploadProduc(context) async {
+    var store = firestore.collection(productsCollection).doc();
+    await store.set({
+      "is_featured": false,
+      'p_category': categoryValue.value,
+      'p_images': FieldValue.arrayUnion([pimgController.text]),
+      'p_subCategory': subCategoryValue.value,
+      'p_wishlist': FieldValue.arrayUnion(([])),
+      'p_name': pnameController.text,
+      'p_price': ppriceController.text,
+      'p_quantity': pquantityController.text,
+      'p_rating': "3.0",
+      "featured_id": "",
+    });
+    isLoading(false);
+    VxToast.show(context, msg: "uploaded");
+  }
 }
 
 
