@@ -4,6 +4,8 @@ import 'package:admin/controllers/profile_controller.dart';
 import 'package:admin/services/restaurant_services.dart';
 import 'package:admin/views/auth_screen/login_screen.dart';
 import 'package:admin/views/profile_screen/edit_profile_screen.dart';
+import 'package:admin/views/profile_screen/manage_menus.dart';
+import 'package:admin/views/profile_screen/manage_staff.dart';
 import 'package:admin/views/restaurant_screen/restaurant_settings_screen.dart';
 import 'package:admin/views/widgets/loading_indicator.dart';
 import 'package:admin/views/widgets/normal_text.dart';
@@ -32,6 +34,7 @@ class ProfileScreen extends StatelessWidget {
             TextButton(
                 onPressed: () async {
                   await Get.find<AuthController>().signOutMethod(context);
+                  await auth.signOut();
                   Get.offAll(() => const LoginScreen());
                 },
                 child: normalText(text: logout)),
@@ -70,6 +73,13 @@ class ProfileScreen extends StatelessWidget {
                                     switch (index) {
                                       case 0:
                                         Get.to(() => RestaurantSettings());
+                                        break;
+                                      case 1:
+                                        Get.to(() => ManageMenus());
+                                        break;
+                                      case 2:
+                                        Get.to(() => ManageStaff());
+                                        break;
                                     }
                                   },
                                   leading: Icon(

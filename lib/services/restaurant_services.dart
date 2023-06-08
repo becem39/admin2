@@ -1,4 +1,5 @@
 import 'package:admin/const/const.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RestaurantServices {
   static getProfile(uid) {
@@ -17,5 +18,11 @@ class RestaurantServices {
 
   static getProducts() {
     return firestore.collection(productsCollection).snapshots();
+  }
+  static getCategories() {
+    return firestore.collection("categories").snapshots();
+  }
+static  getSubCategories(categoryId) {
+    return firestore.collection("categories").doc(categoryId).snapshots();
   }
 }

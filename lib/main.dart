@@ -8,6 +8,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 
+import 'controllers/product_controller.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -47,6 +49,7 @@ class _MyAppState extends State<MyApp> {
       title: appname,
       home: isLoggedIn ? const Home() : const LoginScreen(),
       initialRoute: '/LoginScreen',
+      
       getPages: [
         GetPage(name: '/LoginScreen', page: () => const LoginScreen()),
         GetPage(

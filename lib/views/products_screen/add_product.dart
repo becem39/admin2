@@ -15,7 +15,8 @@ class AddProduct extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var controller = Get.find<ProductsController>();
+    final controller = Get.put(ProductsController());
+
     return Obx(
       () => Scaffold(
         backgroundColor: purpleColor,

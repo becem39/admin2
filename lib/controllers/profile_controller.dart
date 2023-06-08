@@ -17,6 +17,7 @@ class ProfileController extends GetxController {
   late QueryDocumentSnapshot snapshotData;
   var profileImgPath = "".obs;
   var nameController = TextEditingController();
+ 
   var oldPasswordController = TextEditingController();
   var newPasswordController = TextEditingController();
   var profileImageLink = "";
@@ -25,9 +26,9 @@ class ProfileController extends GetxController {
   /////
   ///restaurant controllers
   var restaurantNameController = TextEditingController();
-    var restaurantAddressController = TextEditingController();
-      var restaurantMobileController = TextEditingController();
-        var restaurantDescriptionController = TextEditingController();
+  var restaurantAddressController = TextEditingController();
+  var restaurantMobileController = TextEditingController();
+  var restaurantDescriptionController = TextEditingController();
 
   //change img
   changeImage(context) async {
@@ -58,31 +59,30 @@ class ProfileController extends GetxController {
     store.set({
       'name': name,
       'password': password,
-    //  'image_url': imgUrl,
+      //  'image_url': imgUrl,
     }, SetOptions(merge: true));
     isLoading(false);
   }
 
   // change password
   changeAuthPassword({email, password, newPassword}) async {
-    final cred = EmailAuthProvider.credential(email: email, password: password);
-    await currentUser!.reauthenticateWithCredential(cred).then((value) {
-     currentUser!.updatePassword(newPassword);
-    }).catchError((error) {
-      //  print(error.toString());
-    });
+    final cred =
+        EmailAuthProvider.credential(email: email!, password: password!);
+    await auth.currentUser!.reauthenticateWithCredential(cred);
+    await auth.currentUser!.updatePassword(newPassword!);
+    await auth.signOut();
   }
-  updateRestaurant({name,address,mobile,desc})async {
+
+  updateRestaurant({name, address, mobile, desc}) async {
     var store =
         firestore.collection(restaurantCollection).doc(currentUser!.uid);
     store.set({
       'name': name,
       'address': address,
-      'mobile':mobile,
-      "desc":desc,
+      'mobile': mobile,
+      "desc": desc,
       //  'image_url': imgUrl,
     }, SetOptions(merge: true));
     isLoading(false);
-
   }
 }
