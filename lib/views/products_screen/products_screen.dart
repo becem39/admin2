@@ -1,5 +1,6 @@
 import 'package:admin/const/const.dart';
 import 'package:admin/controllers/product_controller.dart';
+import 'package:admin/services/firestore_services.dart';
 import 'package:admin/services/restaurant_services.dart';
 import 'package:admin/views/products_screen/add_product.dart';
 import 'package:admin/views/products_screen/product_details.dart';
@@ -19,8 +20,14 @@ class ProductsScreen extends StatelessWidget {
     var controller = Get.put(ProductsController());
     return Scaffold(
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Get.to(() => AddProduct());
+          onPressed: () async {
+            controller.populateCategory();
+         /*   if (controller.categoryList.isNotEmpty) {
+              controller.populateSubCategory(controller.categoryList[0]);
+            }
+           
+            print(controller.subCategoryList);*/
+           Get.to(() => AddProduct());
           },
           backgroundColor: purpleColor,
           child: const Icon(Icons.add),

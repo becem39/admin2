@@ -45,9 +45,19 @@ class AddProduct extends StatelessWidget {
               10.heightBox,
               customTextField(hint: "Name", label: "Product name"),
               10.heightBox,
-              productDropdown("Category"),
+              productDropdown(
+                "Category",
+                controller.categoryList,
+                controller.categoryValue,
+                controller,
+              ),
               10.heightBox,
-              productDropdown("SubCategory"),
+              productDropdown(
+                "subCategory",
+                controller.subCategoryList,
+                controller.subCategoryValue,
+                controller,
+              ),
               10.heightBox,
               const Divider(
                 color: white,

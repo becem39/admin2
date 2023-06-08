@@ -104,9 +104,9 @@ class FirestoreServices {
     //.where('p_name', isLessThanOrEqualTo: title)
   }
 
-  static getCategories() async {
+  static Future<List<String>> getCategories() async {
     final snapshot = await firestore.collection('categories').get();
-    var categoryNames = [];
+    var categoryNames = <String>[];
     for (final doc in snapshot.docs) {
       final data = doc.data();
       final categoryName = data['name'] as String?;
@@ -118,9 +118,12 @@ class FirestoreServices {
     return categoryNames;
   }
 
-  static getSubCategories(category) async {
-    final snapshot = await firestore.collection(category).get();
-    var subCategories = [];
+  static Future<List<String>> getSubCategories(category) async {
+    final snapshot = await firestore
+        .collection('categories')
+        .where('name', isEqualTo: category)
+        .get();
+    var subCategories = <String>[];
 
     for (final doc in snapshot.docs) {
       var data = doc.data();
