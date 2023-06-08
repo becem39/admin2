@@ -1,138 +1,141 @@
 import 'package:admin/const/const.dart';
-import 'package:admin/controllers/profile_controller.dart';
-import 'package:admin/views/widgets/custom_textfield.dart';
-import 'package:admin/views/widgets/loading_indicator.dart';
+import 'package:admin/controllers/auth_controller.dart';
+import 'package:admin/controllers/edit_controller.dart';
+import 'package:admin/controllers/product_controller.dart';
+import 'package:admin/controllers/staff_controller.dart';
+import 'package:admin/views/products_screen/components/product_dropdown.dart';
+import 'package:admin/views/profile_screen/manage_subCategories.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'dart:io';
 
+import '../../services/restaurant_services.dart';
+import '../widgets/custom_appBar.dart';
+import '../widgets/custom_textfield.dart';
+import '../widgets/loading_indicator.dart';
 import '../widgets/normal_text.dart';
 
-class ManageStaff extends StatefulWidget {
-  final String? userName;
-  const ManageStaff({super.key, this.userName});
-
-  @override
-  createState() => _ManageStaffState();
-}
-
-class _ManageStaffState extends State<ManageStaff> {
-  late ProfileController controller;
-  @override
-  void initState() {
-    super.initState();
-    controller = Get.find<ProfileController>();
-    if (widget.userName != null) {
-      controller.nameController.text = widget.userName!;
-    }
-  }
+class ManageStaff extends StatelessWidget {
+  const ManageStaff({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => Scaffold(
-        resizeToAvoidBottomInset: false,
+    var controller = Get.put(StaffController());
+    var auth = Get.put(AuthController());
+    return Scaffold(
+      appBar: customAppBar("Staff"),
+      body: StreamBuilder(
+        stream: RestaurantServices.getStaff(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData) {
+            return loadingIndicator();
+          } else {
+            var data = snapshot.data!.docs;
+
+            return Padding(
+              padding: const EdgeInsets.all(8),
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  children: List.generate(data.length, (index) {
+                    return ListTile(
+                      onTap: () {},
+                      tileColor: textfieldGrey,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                      title: boldText(
+                          text: "${data[index]['name']}", color: purpleColor),
+                      subtitle: boldText(
+                          text:
+                              "Total orders made :      ${data[index]['order_count']}",
+                          color: purpleColor),
+                      trailing: TextButton(
+                        onPressed: () {
+                          String staffId = data[index].id;
+
+                          RestaurantServices.removeStaffById(staffId);
+                        },
+                        child: normalText(text: "Delete", color: purpleColor),
+                      ),
+                    ).box.margin(const EdgeInsets.only(bottom: 4)).make();
+                  }),
+                ),
+              ),
+            );
+          }
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return Dialog(
+                child: Container(
+                  height: 300,
+                  width: 450,
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    children: [
+                      boldText(
+                        text: "Add a new Worker",
+                        color: purpleColor,
+                      ),
+                      10.heightBox,
+                      customTextField(
+                        hint: "Worker",
+                        label: "Worker name",
+                        controller: controller.newStaff,
+                      ),
+                      10.heightBox,
+                      customTextField(
+                        hint: "Email",
+                        label: "Worker email",
+                        controller: controller.email,
+                      ),
+                      10.heightBox,
+                      customTextField(
+                        hint: "Password",
+                        label: "Password",
+                        controller: controller.password,
+                      ),
+                      10.heightBox,
+                      Align(
+                        alignment: Alignment.center,
+                        child: TextButton(
+                          onPressed: () async {
+                            String workerName = controller.newStaff.text;
+                            String code = controller.password.text;
+                            String uid =
+                                await controller.addStaff(workerName, code);
+
+                            await auth
+                                .signupMethod(
+                              email: controller.email.text,
+                              password: controller.password.text,
+                              context: context,
+                            )
+                                .then((value) {
+                              return auth.storeStaffData(
+                                id: uid,
+                                email: controller.email.text,
+                                password: controller.password.text,
+                                name: workerName,
+                              );
+                            });
+                          },
+                          child: normalText(text: "Add", color: purpleColor),
+                        ),
+                      ),
+                      10.heightBox,
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        },
         backgroundColor: purpleColor,
-        appBar: AppBar(
-          backgroundColor: purpleColor,
-          title: boldText(text: "Manage menus", size: 16, color: white),
-          actions: [
-            controller.isLoading.value
-                ? loadingIndicator(c: white)
-                : TextButton(
-                    onPressed: () async {
-                      controller.isLoading(true);
-
-                      //if old pass matches db
-                      if (controller.snapshotData['password'] ==
-                          controller.oldPasswordController.text) {
-                        await controller.changeAuthPassword(
-                          email: controller.snapshotData['email'],
-                          password: controller.oldPasswordController.text,
-                          newPassword: controller.newPasswordController,
-                        );
-                        await controller.updateProfile(
-                          name: controller.nameController.text,
-                          password: controller.newPasswordController.text,
-                          /*  imgUrl: controller.profileImageLink,*/
-                        );
-                        // ignore: use_build_context_synchronously
-                        VxToast.show(context, msg: "updated");
-                      } else if (controller
-                              .oldPasswordController.text.isEmpty &&
-                          controller.newPasswordController.text.isEmpty) {
-                        await controller.updateProfile(
-                          name: controller.nameController.text,
-                          password: controller.snapshotData['password'],
-                          /* imgUrl: controller.profileImageLink,*/
-                        );
-                        // ignore: use_build_context_synchronously
-
-                        VxToast.show(context, msg: "updated2");
-                      } else {
-                        // ignore: use_build_context_synchronously
-                        VxToast.show(context, msg: "Wrong old password");
-                        controller.isLoading(false);
-                      }
-                    },
-                    child: normalText(text: "Save", color: white)),
-          ],
-        ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            controller.snapshotData["image_url"].isEmpty &&
-                    controller.profileImgPath.isEmpty
-                ? Image.asset(
-                    icLogo,
-                    height: 200,
-                    width: 200,
-                  ).box.roundedFull.clip(Clip.antiAlias).make()
-                : controller.snapshotData["image_url"] !=
-                        controller.profileImgPath.isEmpty
-                    ? Image.network(
-                        controller.snapshotData["image_url"],
-                        width: 100,
-                        fit: BoxFit.cover,
-                      ).box.roundedFull.clip(Clip.antiAlias).make()
-                    : Image.file(
-                        File(controller.profileImgPath.value),
-                        width: 100,
-                        fit: BoxFit.cover,
-                      ).box.roundedFull.clip(Clip.antiAlias).make(),
-
-            /*  Image.asset(
-                icLogo,
-                height: 200,
-                width: 200,
-              ).box.roundedFull.clip(Clip.antiAlias).make(),*/
-            10.heightBox,
-            /*  ElevatedButton(
-                  onPressed: () {
-                    controller.changeImage(context);
-                  },
-                  child: normalText(text: "Change Logo", color: fontGrey)),*/
-            10.heightBox,
-            const Divider(
-              color: white,
-            ),
-            10.heightBox,
-            customTextField(
-                label: name,
-                hint: "Restaurant name",
-                controller: controller.nameController),
-            10.heightBox,
-            customTextField(
-                label: password,
-                hint: passwordHint,
-                controller: controller.oldPasswordController),
-            10.heightBox,
-            customTextField(
-                label: "New password",
-                hint: passwordHint,
-                controller: controller.newPasswordController),
-            10.heightBox,
-          ],
-        ),
+        child: const Icon(Icons.add),
       ),
     );
   }

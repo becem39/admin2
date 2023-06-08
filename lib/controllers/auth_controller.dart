@@ -1,11 +1,12 @@
+import 'package:admin/views/home_screen/home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-
 import 'package:get/get.dart';
 
 import '../const/const.dart';
+import '../services/restaurant_services.dart';
 
 class AuthController extends GetxController {
   var isLoading = false.obs;
@@ -21,6 +22,18 @@ class AuthController extends GetxController {
     try {
       userCredential = await auth.signInWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('Restaurants')
+          .doc("JVp1fdovf5bTZrsqmq5l59G8pEp1")
+          .get();
+      if (snapshot.exists) {
+        String role = snapshot['role'];
+        if (role == 'admin') {
+          Get.to(const Home());
+        } else {
+          VxToast.show(context, msg: "Invalid credentials");
+        }
+      }
     } on FirebaseAuthException catch (e) {
       VxToast.show(context, msg: e.toString());
     }
@@ -57,6 +70,22 @@ class AuthController extends GetxController {
     });
   }
 
+  Future<void> storeStaffData({
+    required String id,
+    required String name,
+    required String email,
+    required String password,
+  }) async {
+    var staffData = {
+      'id': id,
+      'name': name,
+      'email': email,
+      'password': password,
+    };
+
+    // Store the staff member data in the database
+    RestaurantServices.storeStaffData(staffData);
+  }
   //signout
 
   signOutMethod(context) async {
