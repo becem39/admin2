@@ -10,10 +10,8 @@ class RestaurantServices {
   }
 
   static getOrder() {
-    return firestore
-        .collection(ordersCollection)
-        .where('restaurant_list', arrayContains: currentUser!.uid)
-        .snapshots();
+    return firestore.collection(ordersCollection).snapshots();
+    //.where('restaurant_list', arrayContains: currentUser!.uid)
   }
 
   static getProducts() {
@@ -61,7 +59,7 @@ class RestaurantServices {
       }
     }
   }*/
-    static Future<void> removeStaffById(String staffId) async {
+  static Future<void> removeStaffById(String staffId) async {
     try {
       await FirebaseFirestore.instance
           .collection('staff')

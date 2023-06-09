@@ -54,10 +54,9 @@ class OrdersScreen extends StatelessWidget {
                               ),
                               if (time != null)
                                 boldText(
-                                  text: intl.DateFormat()
-                                      .add_yMd()
-                                      .add_jms()
-                                      .format(time),
+                                  text:
+                                      intl.DateFormat().add_yMd().format(time),
+                                  //.add_jms()
                                   color: fontGrey,
                                 ),
                             ],

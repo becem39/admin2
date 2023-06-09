@@ -129,7 +129,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                         title1: 'order code'),
                     orderPlaceDetails(
                       title1: "Order date ",
-                      data1: intl.DateFormat().add_yMd().add_jms().format(
+                      data1: intl.DateFormat().add_yMd().format(
                             (widget.data['order_date'].toDate()),
                           ),
                     ),

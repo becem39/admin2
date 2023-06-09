@@ -64,11 +64,11 @@ class AddProduct extends StatelessWidget {
                     label: "Quantity",
                     controller: controller.pquantityController),
                 10.heightBox,
-                customTextField(
+                /* customTextField(
                     hint: "img",
                     label: "ImgUrl",
                     controller: controller.pimgController),
-                10.heightBox,
+                10.heightBox,*/
                 productDropdown(
                   "Category",
                   controller.categoryList,
