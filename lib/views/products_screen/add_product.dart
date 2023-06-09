@@ -25,7 +25,7 @@ class AddProduct extends StatelessWidget {
               onPressed: () {
                 Get.back();
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.arrow_back,
                 color: white,
               )),
@@ -100,7 +100,6 @@ class AddProduct extends StatelessWidget {
                               width: 100,
                             )
                           : productImages(label: "${index + 1}").onTap(() {
-                              print(controller.pImagesList);
                               controller.pickImage(index);
                             }),
                     ),

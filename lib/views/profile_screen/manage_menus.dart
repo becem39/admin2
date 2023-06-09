@@ -1,7 +1,5 @@
 import 'package:admin/const/const.dart';
 import 'package:admin/controllers/edit_controller.dart';
-import 'package:admin/controllers/product_controller.dart';
-import 'package:admin/views/products_screen/components/product_dropdown.dart';
 import 'package:admin/views/profile_screen/manage_subCategories.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';

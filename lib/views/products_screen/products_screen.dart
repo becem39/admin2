@@ -1,6 +1,5 @@
 import 'package:admin/const/const.dart';
 import 'package:admin/controllers/product_controller.dart';
-import 'package:admin/services/firestore_services.dart';
 import 'package:admin/services/restaurant_services.dart';
 import 'package:admin/views/products_screen/add_product.dart';
 import 'package:admin/views/products_screen/product_details.dart';
@@ -8,7 +7,6 @@ import 'package:admin/views/widgets/custom_appBar.dart';
 import 'package:admin/views/widgets/normal_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart' as intl;
 
 import '../widgets/loading_indicator.dart';
 
@@ -23,7 +21,7 @@ class ProductsScreen extends StatelessWidget {
           onPressed: () async {
             controller.populateCategory();
 
-            Get.to(() => AddProduct());
+            Get.to(() => const AddProduct());
           },
           backgroundColor: purpleColor,
           child: const Icon(Icons.add),
@@ -74,8 +72,6 @@ class ProductsScreen extends StatelessWidget {
                                   ),
                                   trailing: VxPopupMenu(
                                       arrowSize: 0.0,
-                                      child:
-                                          const Icon(Icons.more_vert_rounded),
                                       menuBuilder: () => Column(
                                             children: List.generate(
                                               popupMenuIcons.length,
@@ -102,7 +98,6 @@ class ProductsScreen extends StatelessWidget {
                                                 ).onTap(() {
                                                   if (data[index]
                                                       ['is_featured']) {
-                                                    print('eeeee');
                                                     controller.removeFeature(
                                                         data[index].id);
                                                   } else {
@@ -113,7 +108,9 @@ class ProductsScreen extends StatelessWidget {
                                               ),
                                             ),
                                           ).box.white.rounded.width(200).make(),
-                                      clickType: VxClickType.singleClick),
+                                      clickType: VxClickType.singleClick,
+                                      child:
+                                          const Icon(Icons.more_vert_rounded)),
                                 ),
                               )),
                     ),

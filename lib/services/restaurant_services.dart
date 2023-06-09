@@ -65,9 +65,8 @@ class RestaurantServices {
           .collection('staff')
           .doc(staffId)
           .delete();
-      print('Staff member removed successfully!');
+    // ignore: empty_catches
     } catch (e) {
-      print('Failed to remove staff member: $e');
     }
   }
 }

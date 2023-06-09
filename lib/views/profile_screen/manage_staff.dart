@@ -1,10 +1,6 @@
 import 'package:admin/const/const.dart';
 import 'package:admin/controllers/auth_controller.dart';
-import 'package:admin/controllers/edit_controller.dart';
-import 'package:admin/controllers/product_controller.dart';
 import 'package:admin/controllers/staff_controller.dart';
-import 'package:admin/views/products_screen/components/product_dropdown.dart';
-import 'package:admin/views/profile_screen/manage_subCategories.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
@@ -108,6 +104,7 @@ class ManageStaff extends StatelessWidget {
                             String uid =
                                 await controller.addStaff(workerName, code);
 
+                            // ignore: use_build_context_synchronously
                             await auth
                                 .signupMethod(
                               email: controller.email.text,

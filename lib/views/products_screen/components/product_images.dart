@@ -1,5 +1,4 @@
 import 'package:admin/const/const.dart';
-import 'package:admin/views/widgets/normal_text.dart';
 
 Widget productImages({required label, onPress}) {
   return "$label"
